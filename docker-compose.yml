@@ -1,0 +1,93 @@
+version: '3.8'
+
+networks:
+  api-movies:
+    name: api-movies
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: api-movies.nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - api-movies
+    depends_on:
+      - php
+      - mysql
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: api-movies.php
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - api-movies
+
+  mysql:
+    image: mysql:5.7.32
+    container_name: api-movies.mysql
+    environment:
+      MYSQL_DATABASE: laraveldb
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - api-movies
+
+  composer:
+    image: composer:latest
+    container_name: api-movies.composer
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    user: 1000:www-data
+    networks:
+      - api-movies
+
+  artisan:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: api-movies.artisan
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ["php", "artisan"]
+    user: 1000:www-data
+    networks:
+      - api-movies
+
+  npm:
+    image: node:current-alpine
+    container_name: api-movies.npm
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: [ "npm" ]
+    user: 1000:www-data
+    networks:
+      - api-movies
+
+  phpunit:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: api-movies.phpunit
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: [ "/var/www/html/vendor/bin/phpunit" ]
+    user: 1000:www-data
+    networks:
+      - api-movies
+
+
+
+
