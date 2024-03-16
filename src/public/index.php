@@ -1,4 +1,9 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+//ini_set('memory_limit', '1024M');
+//echo ini_get('memory_limit');
 
 use Illuminate\Http\Request;
 

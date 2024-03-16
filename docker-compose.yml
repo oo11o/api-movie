@@ -15,6 +15,7 @@ services:
       - 443:443
     volumes:
       - ./src:/var/www/html
+      - ./nginx/logs:/var/log/nginx
     networks:
       - api-movies
     depends_on:
@@ -27,6 +28,8 @@ services:
     container_name: api-movies.php
     volumes:
       - ./src:/var/www/html
+      - ./php/logs:/var/log/php
+    user: 1000:www-data
     networks:
       - api-movies
 
