@@ -15,11 +15,12 @@ services:
       - 443:443
     volumes:
       - ./src:/var/www/html
+      - ./nginx/logs:/var/log/nginx
     networks:
       - api-movies
     depends_on:
       - php
-      - mysql
+      - postgres
   php:
     build:
       context: .
@@ -27,17 +28,22 @@ services:
     container_name: api-movies.php
     volumes:
       - ./src:/var/www/html
+      - ./php/logs:/var/log/php
+    user: 1000:www-data
     networks:
       - api-movies
 
-  mysql:
-    image: mysql:5.7.32
-    container_name: api-movies.mysql
+  postgres:
+    container_name: api-movies.postgres
+    image: postgres
     environment:
-      MYSQL_DATABASE: laraveldb
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: parsekino
+    volumes:
+      - ../parser-kinopoisk/docker/postgesql/data:/var/lib/postgresql/data
+    ports:
+      - "5430:5432"
     networks:
       - api-movies
 

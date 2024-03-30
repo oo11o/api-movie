@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+   $res = \App\Models\Movie::limit(10)->get()->toJson();
 });
