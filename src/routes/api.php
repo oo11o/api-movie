@@ -7,5 +7,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/movies', function (){
-});
+Route::resource('/movies', \App\Http\Controllers\Api\V1\MovieController::class);
